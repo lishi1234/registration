@@ -1,0 +1,55 @@
+clc;
+clear all;
+%% reading images
+file_image='C:\Users\PC\Desktop\multnsct\sar2opt_hiercal';
+% read sensed image
+[filename,pathname]=uigetfile({'*.*','All Files(*.*)'},'Select to be referenced image',file_image);
+im1=imread(strcat(pathname,filename));
+% read base image
+[filename,pathname]=uigetfile({'*.*','All Files(*.*)'},'Select reference image',file_image);
+% fullFileName = fullfile(pathname, filename);
+im2 = imread(strcat(pathname,filename));
+
+% file_image = 'C:\Users\PC\Desktop\multnsct\sar-opt';
+% [filename,pathname]=uigetfile({'*.*','All Files(*.*)'},'Reference image',...
+%                           filename);
+% im1=imread(strcat(pathname,filename));
+% [filename,pathname]=uigetfile({'*.*','All Files(*.*)'},'Image to be registered',...
+%                           filename);
+% im2=imread(strcat(pathname,filename));
+
+%% image preprocess
+if size(im1,3)==1
+    temp = im1;
+    im1(:,:,1) = temp;
+    im1(:,:,2) = temp;
+    im1(:,:,3) = temp;
+end
+if size(im2,3)==1
+    temp=im2;
+    im2(:,:,1)=temp;
+    im2(:,:,2)=temp;
+    im2(:,:,3)=temp;
+end
+disp('SORIFT feature detection and description')
+%% param setting 
+scale = 5;
+patch_size = 96;
+s = 4;
+o = 6;
+
+%% Scale and oriention invariance phase congruency feature detection and description
+%feature detection
+[des_1,des_2] = featurte_detection (im1,im2,patch_size,scale,s,o);% patch_size=96,scale=4,orientation=6
+ disp('feature detection and description end')
+%% image matching
+% [cleanPoints1,cleanPoints2,H] = rift_feature_matching(des_1,des_2);% 'MaxRatio',0.9,'MatchThreshold',100,
+% R2FD2经过循环移位只进行一次描述
+[cleanPoints1,cleanPoints2,H] =r2fd2_featurematch(des_1,des_2);
+% printf('%2d',H);
+%% results show
+button1=appendimages(im1,im2,cleanPoints1,cleanPoints2);
+% rmse = calculate_RMSE()
+% image_fusion1(im2,im1,double(H));
+
+
