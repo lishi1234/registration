@@ -4,7 +4,7 @@ KPS=kps'; %keypoints
 [yim,xim,~] = size(im);
 d=12;%扇形分块数360/12=30度————————变化需要根据方向进行分块；原始扇区划分d=16;
 ns=6;%直方图数
-%% MIM
+%% MIM最大索引图
 CS = zeros(yim, xim, o); %convolution sequence
 
 for j=1:o
@@ -13,7 +13,7 @@ for j=1:o
         CS(:,:,j)=CS(:,:,j)+eo_choice;
     end
 end
-[~, MIM] = max(CS,[],3); % MIM maximum index map
+[~, MIM] = max(CS,[],3); 
 % clear i
 %% log_polar description——需要对对极数坐标的扇形区域的统计顺序进行修改
 des = zeros(size(KPS,2),(2*d+1)*o ); %descriptor (size: 6×6×o)
@@ -100,3 +100,4 @@ for k = 1: size(KPS,2)
 end
 des = struct('kps', KPS(:,kps_to_ignore ==0)', 'des', des(kps_to_ignore==0,:));
 end
+
